@@ -1,9 +1,7 @@
-# library(lubridate)
 library("ggplot2")
 library("dplyr")
 
 parse_sar_file <- function(filename) {
-  # print(filename)
   sar_raw <- read.table(filename, skip = 1, header = TRUE, fill = TRUE)
   sar_filtered <- sar_raw[sar_raw$CPU == "all",]
   # sar_filtered <- sar_raw[sar_raw$CPU %in% (0:23),]
