@@ -4,11 +4,11 @@ library(reshape2)
 library(readr)
 
 parse_sar_file <- function(filename) {
+  sar_date <- as.character(read.table(filename, nrows = 1, header=FALSE)[1,4])
+  print(paste(filename, sar_date))
   sar_raw <- read.table(filename, skip = 1, header = TRUE, fill = TRUE)
   sar_filtered <- sar_raw[sar_raw$CPU == "all",]
   rm(sar_raw)
-  sar_date <- as.character(read.table(filename, nrows = 1, header=FALSE)[1,4])
-  print(paste(filename, sar_date))
   sar_cpu <- sar_filtered[,c(1,2,4,6,7)]
   
   names(sar_cpu) <- c("time", "ampm","usr", "sys", "iowait")
@@ -32,7 +32,7 @@ parse_sar_file <- function(filename) {
   rm(sar_cpu)
 }
 
-sar_files <- list.files(pattern = "^sar*")
+sar_files <- list.files(pattern = "sar[0-90-9]")
 for (file in sar_files) {
-   parse_sar_file(file);
-}
+  parse_sar_file(file);
+} 
