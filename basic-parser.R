@@ -9,9 +9,12 @@ parse_sar_file <- function(filename) {
   sar_raw <- read.table(filename, skip = 1, header = TRUE, fill = TRUE)
   sar_filtered <- sar_raw[sar_raw$CPU == "all",]
   rm(sar_raw)
-  sar_cpu <- sar_filtered[,c(1,2,4,6,7)]
+  # sar_cpu <- sar_filtered[,c(1,2,4,6,7)]
+  sar_cpu <- sar_filtered[,c(1,3,5,6)]
   
-  names(sar_cpu) <- c("time", "ampm","usr", "sys", "iowait")
+  # names(sar_cpu) <- c("time", "ampm","usr", "sys", "iowait")
+  names(sar_cpu) <- c("time", "usr", "sys", "iowait")
+  # sar_cpu$timestamp <- paste(sar_date, sar_cpu$time, sar_cpu$ampm)
   sar_cpu$timestamp <- paste(sar_date, sar_cpu$time, sar_cpu$ampm)
   sar_cpu$usr <- as.numeric(sub(" ", x = sar_cpu$usr, ""))
   sar_cpu$sys <- as.numeric(sub(" ", x = sar_cpu$sys, ""))
@@ -21,7 +24,8 @@ parse_sar_file <- function(filename) {
   output_png <- paste("exported-", filename, ".png", sep = "")
   write.csv(file=output_csv, x = sar_cpu, row.names = FALSE)
   sar_cpu <- read_csv(file = output_csv,
-                      col_types = cols(timestamp = col_datetime(format = "%Y-%m-%d %H:%M:%S %p")));
+                      # col_types = cols(timestamp = col_datetime(format = "%Y-%m-%d %h:%M:%S %p")));
+                        col_types = cols(timestamp = col_datetime(format = "%Y-%m-%d %H:%M:%S ")));
 
   s_melted <- melt(sar_cpu[,c(6,3,4,5)], id="timestamp")
   ggplot(data = s_melted, aes(timestamp, y=value)) + 
@@ -32,7 +36,7 @@ parse_sar_file <- function(filename) {
   rm(sar_cpu)
 }
 
-sar_files <- list.files(pattern = "sar[0-90-9]")
+sar_files <- list.files(pattern = "^sar[0-90-9]")
 for (file in sar_files) {
   parse_sar_file(file);
 } 
