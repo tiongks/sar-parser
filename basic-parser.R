@@ -21,8 +21,7 @@ parse_sar_file <- function(filename) {
   output_png <- paste("exported-", filename, ".png", sep = "")
   write.csv(file=output_csv, x = sar_cpu, row.names = FALSE)
   sar_cpu <- read_csv(file = output_csv,
-                      col_types = cols(X1 = col_skip(), 
-                                       timestamp = col_datetime(format = "%Y-%m-%d %H:%M:%S %p")));
+                      col_types = cols(timestamp = col_datetime(format = "%Y-%m-%d %H:%M:%S %p")));
 
   s_melted <- melt(sar_cpu[,c(6,3,4,5)], id="timestamp")
   ggplot(data = s_melted, aes(timestamp, y=value)) + 
